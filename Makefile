@@ -1,4 +1,4 @@
-LIBPS4	:= $(PS4_PAYLOAD_SDK)/libPS4
+LIBPS4	:= $(PS4_PAYLOAD_SDK_SCENE)/libPS4
 
 CC	:= gcc
 OBJCOPY	:= objcopy
@@ -26,7 +26,11 @@ assets/index.h: index.html
 	@mkdir -p assets
 	xxd -i index.html > assets/index.h
 
-$(ODIR)/%.o: $(SDIR)/%.c assets/index.h
+assets/loader.h: loader.html
+	@mkdir -p assets
+	xxd -i loader.html > assets/loader.h
+
+$(ODIR)/%.o: $(SDIR)/%.c assets/index.h assets/loader.h
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 $(ODIR)/%.o: $(SDIR)/%.s

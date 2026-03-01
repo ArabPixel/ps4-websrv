@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS4 Payload File Sender</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            background: #0e0e10;
+            color: #efeff1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            background: #18181b;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            margin: auto;
+            border: 1px solid #303032;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            border: 1px solid #333;
+            background: #09090b;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 6px;
+            border: none;
+            background: #9147ff;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:active {
+            background: #772ce8;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            background: #000;
+            color: #adff2f;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            text-align: left;
+            min-height: 100px;
+            border: 1px solid #222;
+        }
+
+        .label {
+            display: block;
+            text-align: left;
+            font-size: 14px;
+            color: #adadb8;
+            margin-bottom: -10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h3>Payload Sender</h3>
+
+        <span class="label">PS4 IP Address:</span>
+        <input type="text" id="ps4ip" placeholder="e.g. 192.168.1.15" value="">
+
+        <span class="label">Select Payload (.bin):</span>
+        <input type="file" id="fileInput" accept=".bin">
+
+        <button onclick="uploadAndSend()">Send to PS4</button>
+
+        <div id="status">Status: Ready to upload...</div>
+    </div>
+
+    <script>
+        function log(msg) {
+            const statusBox = document.getElementById('status');
+            statusBox.innerHTML += "> " + msg + "<br>";
+            statusBox.scrollTop = statusBox.scrollHeight;
+        }
+
+        async function uploadAndSend() {
+            const ip = document.getElementById('ps4ip').value || window.location.hostname;
+            log(ip)
+            const fileElement = document.getElementById('fileInput');
+            const file = fileElement.files[0];
+
+            if (!ip || !file) {
+                alert("Please enter IP and select file.");
+                return;
+            }
+
+            log("Step 1: Requesting Browser Permission...");
+
+            // We try to 'touch' the PS4 status port first.
+            // This helps bypass some 'Private Network' blocks by making 
+            // the browser think the user intended to visit this IP.
+            try {
+                await fetch(`http://${ip}:9090/status`, { mode: 'no-cors' });
+            } catch (e) {
+                log("Permission hint sent (Ignoring error)...");
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const rawData = e.target.result;
+                log("Step 2: Sending Payload...");
+
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", `http://${ip}:9090`, true);
+
+                // IMPORTANT: We don't set any headers. 
+                // Adding headers triggers 'Preflight' (OPTIONS) requests 
+                // which GoldHEN will ignore, causing the whole thing to fail.
+
+                xhr.send(rawData);
+                log("Sent! Check PS4 notification.");
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function sendToPS4(ip, data) {
+            log("Pushing to PS4 at " + ip + ":9090...");
+
+            const xhr = new XMLHttpRequest();
+            // Standard GoldHEN BinLoader port
+            xhr.open("POST", "http://" + ip + ":9090", true);
+
+            // We use the 'blind' send method. 
+            // Modern browsers will show a 'Network Error' because GoldHEN 
+            // doesn't send back the security headers (CORS) the phone expects.
+            xhr.send(data);
+
+            log("Payload sent!");
+            log("<span style='color:#888;'>Check PS4 for notification. If it fails, refresh the BinLoader on the console.</span>");
+        }
+
+        function checkConnection() {
+            const ip = document.getElementById('ps4ip').value;
+            const img = new Image();
+            // We try to load a fake image from the PS4 port
+            img.src = `http://${ip}:9090/favicon.ico?${Date.now()}`;
+
+            log("Testing connection...");
+
+            img.onerror = function () {
+                // In Mixed Content, the browser might still block the display, 
+                // but it 'pings' the IP, which can sometimes wake up the route.
+                log("Ping attempted. (Mixed content still restricts results)");
+            };
+        }
+    </script>
+
+</body>
+
+</html>

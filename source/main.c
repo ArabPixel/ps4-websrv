@@ -1,5 +1,6 @@
 #include "ps4.h"
 #include "index.h" // built by xxid -i index.html > index.h in Makefile
+#include "loader.h" // built by xxid -i loader.html > loader.h in Makefile
 
 #define SERVER_PORT 80
 #define WEB_ROOT "/data/websrv"
@@ -53,14 +54,18 @@ void mkdir_recursive(const char *path) {
 
 void setup_webroot(void) {
   struct stat st;
-  char index_path[PATH_MAX];
+  char path[PATH_MAX];
 
   if (stat(WEB_ROOT, &st) != 0 || !S_ISDIR(st.st_mode))
     mkdir_recursive(WEB_ROOT);
 
-  snprintf(index_path, sizeof(index_path), "%s/index.html", WEB_ROOT);
-  if (stat(index_path, &st) != 0)
-    write_default_file(index_path, index_html, index_html_len);
+  snprintf(path, sizeof(path), "%s/index.html", WEB_ROOT);
+  if (stat(path, &st) != 0)
+    write_default_file(path, index_html, index_html_len);
+
+  snprintf(path, sizeof(path), "%s/loader.html", WEB_ROOT);
+  if (stat(path, &st) != 0)
+    write_default_file(path, loader_html, loader_html_len);
 }
 
 void *http_server_thread(void *arg) {
