@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PS4 Websrv - Yaaay</title>
+    <style>
+        :root {
+            --ps-blue: #003791;
+            --ps-light-blue: #0072ce;
+            --bg-dark: #0a0a0a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-main: #e0e0e0;
+            --accent: #00d4ff;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top right, var(--ps-blue), transparent 400px);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 600px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--ps-light-blue);
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #bbb;
+        }
+
+        .path-hint {
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--accent);
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            border-left: 4px solid var(--accent);
+            margin: 20px 0;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: var(--ps-light-blue);
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>PS4 Web Server</h1>
+
+        <p>Your local server is successfully running.</p>
+
+        <div class="path-hint">
+            /data/websrv
+        </div>
+
+        <p>Custom files placed in the directory above will appear here. Which means its possible to put
+            your host files such as <strong>PSFree
+                Enhanced</strong> and it will work immediately.</p>
+        <p>Visit this website on any device to send payloads to the console on the fly.</p>
+
+        <div class="footer">
+            Made by ArabPixel
+        </div>
+    </div>
+
+</body>
+
+</html>
