@@ -35,7 +35,16 @@
             box-sizing: border-box;
         }
 
-        button {
+        .buttons{
+            display: flex;
+            gap: 10px;
+        }
+        .buttons a{
+            text-decoration: none;
+        }
+
+        button,
+        a {
             width: 100%;
             padding: 15px;
             border-radius: 6px;
@@ -85,12 +94,18 @@
         <span class="label">Select Payload (.bin):</span>
         <input type="file" id="fileInput" accept=".bin">
 
-        <button onclick="uploadAndSend()">Send to PS4</button>
+        <div class="buttons">
+            <button onclick="uploadAndSend()">Send to PS4</button>
+            <a href="index.html">Back</a>
+        </div>
 
         <div id="status">Status: Ready to upload...</div>
     </div>
 
     <script>
+        window.onload = function () {
+            document.getElementById('ps4ip').value = window.location.hostname;
+        }
         function log(msg) {
             const statusBox = document.getElementById('status');
             statusBox.innerHTML += "> " + msg + "<br>";

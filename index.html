@@ -86,6 +86,30 @@
         .button:hover {
             background-color: #00b4ff;
         }
+
+        .btn-kill {
+            background-color: #e91e63;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn-kill:hover {
+            background-color: #c2185b;
+        }
+
+        .btn-notify {
+            background-color: #25e91e;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+        .btn-notify:hover {
+            background-color: #18c237;
+        }
     </style>
 </head>
 
@@ -105,11 +129,42 @@
                 Enhanced</strong> and it will work immediately.</p>
         <p>Visit this website on any device to send payloads to the console on the fly.</p>
         <a class="button" href="loader.html">Try the Payload Sender</a>
-
+        <button class="button btn-kill" onclick="shutdownServer()">Shut Down Server</button>
+        <button class="button btn-notify" onclick="notify()">Test Notification</button>
         <div class="footer">
             Made by ArabPixel
         </div>
     </div>
+
+    <script>
+        function shutdownServer() {
+            if (!confirm("Are you sure you want to stop the web server? You will need to re-inject the payload to start it again.")) return;
+
+            fetch('/shutdown')
+                .then(() => {
+                    document.body.innerHTML = `
+                        <div class="container">
+                            <h1>Server Stopped</h1>
+                            <p>The web server has been shut down successfully.</p>
+                            <p>You can now close this browser window.</p>
+                        </div>
+                    `;
+                })
+                .catch(err => {
+                    alert("Server stopped? (connection lost).");
+                    window.location.reload();
+                });
+        }
+        function notify() {
+            fetch('/notify')
+                .then(() => {
+                    alert("Notification sent!");
+                })
+                .catch(err => {
+                    alert("Notification failed? (connection lost).");
+                });
+        }
+    </script>
 
 </body>
 
