@@ -156,13 +156,26 @@
                 });
         }
         function notify() {
-            fetch('/notify')
+            const param = encodeURIComponent(detectPlatform());
+            fetch('/notify?msg=Hello World from ' + param)
                 .then(() => {
                     alert("Notification sent!");
                 })
                 .catch(err => {
                     alert("Notification failed? (connection lost).");
                 });
+        }
+
+        function detectPlatform() {
+            const ua = navigator.userAgent;
+            
+            if      (/PlayStation/i.test(ua)) return 'PS4';
+            else if (/Android/i.test(ua))     return 'Android';
+            else if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS';
+            else if (/Macintosh/i.test(ua))   return 'MacOS';
+            else if (/Windows/i.test(ua))     return 'Windows';
+            else if (/Linux/i.test(ua))       return 'Linux';
+            else                              return 'Unknown';
         }
     </script>
 
